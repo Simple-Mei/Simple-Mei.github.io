@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        iOS开发笔记-UIKBBlurredKeyView｜SimpleMei&#39;s blog
+        iOS开发日记-项目中多Xcconfig简单使用｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/iOS开发笔记-UIKBBlurredKeyView/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/iOS开发日记-项目中多Xcconfig简单使用/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -155,7 +155,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>iOS开发笔记-UIKBBlurredKeyView</h1>
+                    <h1>iOS开发日记-项目中多Xcconfig简单使用</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
@@ -172,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            iOS开发笔记-UIKBBlurredKeyView
+            iOS开发日记-项目中多Xcconfig简单使用
         </span>
     </div>
 </header>
@@ -184,38 +184,71 @@
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
                 <blockquote>
-<p>周一早上一开会，就听到一个噩耗，上线已久的app有一个必现的crash的bug，心情瞬间有些凉。</p>
+<p>随着公司项目运营的正规化，提供了多个服务器环境地址来进行不同场景的开发及测试。以前最笨的办法在项目要编译哪个环境就屏蔽定义的其它服务器地址，感觉好low。所以为了方便在各个服务器环境切换打包调试，所以就想起了使用多个Xcconfig的方式来解决这个问题，本身项目已经使用了多个target来配置开发多个相似app。</p>
 </blockquote>
-<p>#直接上问题吧<br>有一个用tableview做的一个填写表单页面，只要在填写时，切换到手写输入法，手写之后就会crash，然后错误提示：[UIKBBlurredKeyView candidateList]: unrecognized selector sent to instance，之前从来没遇到过这种错误，一直不知所措。只好求助万能的谷歌百度，原来是手势冲突原因。<br>由于之前开发的时候，为了让填写表单是弹出的键盘能点击空白处收回键盘，就给scrollview写了一个分类，重写了三个方法。</p>
-<pre><code>- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-[[self nextResponder] touchesBegan:touches withEvent:event];
-[super touchesBegan:touches withEvent:event];
-}
+<p>##创建Xcconfig-在不同mdoel下使用不同的配置</p>
+<p>选择File-&gt;new-&gt;File，弹出的对话框选择创建Xcconfig文件类型，如下图，灰色选中就是我们需要的文件类型。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-780f63a5c7d70419.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ceatefile.png"></p>
+<p>我们可以先建一个文件夹来放这些新建的Xcconfig配置文件，如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-5675ee0955e3ab0a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="configfloder.png"></p>
+<p>PS: 由于项目的需要我建了四个Xcconfig文件，每个都代表一个Model下的配置。</p>
+<pre><code> AppStoreConfig：打包上线时的配置。
+ PreServerConfig：预上线测试环境配置。
+ 60ServerConfig：开发调试环境配置。
+ ProductServerConfig：打包已经在AppStore上面销售的环境配置。
 
--(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-[[self nextResponder] touchesMoved:touches withEvent:event];
-[super touchesMoved:touches withEvent:event];
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-[[self nextResponder] touchesEnded:touches withEvent:event];
-[super touchesEnded:touches withEvent:event];
-}
-</code></pre><p>手写输入法和这个分类处理手势冲突导致app crash了。找到问题就好办了，最后放弃了这个分类，解决手写输入crash的bug，但是点击tableview空白收回键盘的功能也就失效了。最后只有往tableview上加一个tap手势，来收回键盘。键盘是回收了，但是tableview上一些cell不能点击跳转了，又是手势冲突。还好添加的手势有一个cancelsTouchesInView属性，文档解释：A Boolean value affecting whether touches are delivered to a view when a gesture is recognized.这个布尔属性默认是YES,就是会取消手势的传递到视图，所以在给tableview添加手势的时候，将次属性设置为NO,这样手势可以传递到tableview上，从而可以响应Cell的选择事件。</p>
+ps：其实还应该有一个公共的CommondConfig文件，用来配置所有配置文件相同的配置的，比如：版本号之类的。
+由于需求简单，我就省去这个，有需求的可以根据自己的需求添加。
+</code></pre><p>##配置不同Xcconfig</p>
+<pre><code>APP_DISPLAY_NAME = 不同配置app显示的名字
+PRODUCT_BUNDLE_IDENTIFIER = 不同配置app的的bundleID,这样可以共存多个app
+BUILD_MODE = 自定义字段区分不同环境Model
+
+ps：APP_DISPLAY_NAME这里设置了，一定要去info.plist文件中把里面的Bundle Name改成
+APP_DISPLAY_NAME，才会生效，如下图:
+</code></pre><p><img src="http://upload-images.jianshu.io/upload_images/4222928-065748909f1535dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="infoplist.png"></p>
+<p>其实这里可以修改你想修改不同的配置，在不同Model下。</p>
+<p>##项目中配置Xcconfig<br>1.在product中配置不同Xcconfig，如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-8b1c54f9efe9956e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="productsetting.png"></p>
+<p>点击Configurations下面的+选择你要添加的类型。最开始默认是Debug和Release两种模式。在我的项目中只有AppStore配置是复制于release，其余都来自debug。当然根据自己项目需求，自己的选择。然后在每个里面选择对应的Xcconfig配置。如果项目中有pods的话，最简单的解决方法就是，pod install 一下，pods就会有提示，提示你应该引用什么什么config。然后你复制对应的配置在config文件添加，如下：</p>
+<pre><code>  //引入pod的config
+#include &quot;Pods/Target Support Files/Pods-xxxx/Pods-xxxxx.appstore.xcconfig&quot; 
+
+APP_DISPLAY_NAME = xxxxxx
+
+PRODUCT_BUNDLE_IDENTIFIER = xxxxxx
+
+BUILD_MODE = APPSTORESERVER
+</code></pre><p>##配置Model<br>我们在Xcconfig自定义了一个key是BUILD_MODE，这个怎么用呢？这个是用来区分不同环境的。在Build Settings中搜索：preprocessor 找到 Preprocessor Macros配置项，在里面添加上我们自定义的key，我们就可以在项目用BUILD_MODE来区分那个环境了，如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-9dfb3523f467535d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="addModel.png"></p>
+<p>添加完后就是这样的，如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-9f8dce67880b6a06.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="overaddmdoel.png"></p>
+<p>##添加多个Scheme<br>在IDE左上角top run 按钮旁边点击scheme，选择new scheme，自定义一个名字，自己高兴就好。我有四个配置文件，所以我有四个scheme，分别对应不同的环境，然后编辑scheme，选择对应的配置，主要是debug，archive，等里面的配置，自己看着办吧。下图是我的四个scheme：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-34b1ae2a5c5c0a96.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="schemelist.png"></p>
+<p>##大功告成，如何使用？</p>
+<p>我是这样用的：</p>
+<pre><code>#if  APPSTORESERVER
+#define baseUrl       @&quot;xxxxx&quot;
+#elif  PRODUCTSERVER
+#define baseUrl       @&quot;xxxxx&quot;
+#elif  PRESERVER
+#define baseUrl       @&quot;xxxxx&quot;
+#elif  TESTSERVER
+#define baseUrl       @&quot;xxxxx&quot;
+#else
+#define baseUrl       @&quot;xxxxx&quot;
+#endif
+</code></pre><p>##最后<br>各路大神有错误的地方，还请给小弟慷慨指出。若小伙伴有什么不懂地方，可以留言，我会尽快回复的。希望对您有用~</p>
 
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2017/09/25/iOS开发笔记-设置UITaleView背景颜色的坑/" data-toggle="tooltip" data-placement="top"
-                           title="iOS开发笔记-设置UITaleView背景颜色的坑">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2017/09/25/IOS开发日记1-项目中配置多个target及podfile文件配置/" data-toggle="tooltip" data-placement="top"
-                           title="IOS开发日记1-项目中配置多个target及podfile文件配置">Next Post &rarr;</a>
+                        <a href="/2017/09/25/iOS系统居然自带悬浮窗口调试工具/" data-toggle="tooltip" data-placement="top"
+                           title="iOS系统居然自带悬浮窗口调试工具">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
