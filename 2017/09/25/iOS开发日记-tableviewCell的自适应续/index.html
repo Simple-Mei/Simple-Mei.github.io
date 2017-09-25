@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Hello World｜SimpleMei&#39;s blog
+        iOS开发日记-tableviewCell的自适应续｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/12/hello-world/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/iOS开发日记-tableviewCell的自适应续/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,13 +137,14 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="images/banner.jpg">
+<img class="wechat-title-img"
+     src="images/banner.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('images/banner.jpg');
+        background-image: url('images/banner.jpg')
     }
 
     
@@ -154,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Hello World</h1>
+                    <h1>iOS开发日记-tableviewCell的自适应续</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-12
+                          日期 2017-09-25
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -171,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Hello World
+            iOS开发日记-tableviewCell的自适应续
         </span>
     </div>
 </header>
@@ -182,15 +183,65 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+                <h1 id="iOS开发日记-tableviewCell的自适应续-填坑"><a href="#iOS开发日记-tableviewCell的自适应续-填坑" class="headerlink" title="iOS开发日记-tableviewCell的自适应续(填坑)"></a>iOS开发日记-tableviewCell的自适应续(填坑)</h1><blockquote>
+<p>上一篇<a href="tableviewCell的自适应">tableviewCell的自适应</a>文章中讲了cell中有textView控件时,根据输入的内容动态自适应Cell的高度.虽然上文实现了功能,但是我在后面的使用中,有一些小瑕疵,或者说是坑吧,今天就来填这个坑.</p>
+</blockquote>
+<p>#一.坑的来源<br>先上图片吧,再来说吧.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-9e0bc243cb6bf2ba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/300" alt="设置嘉宾.png"></p>
+<p>这张设计图中,有两个输入,嘉宾名称是一个textField,嘉宾简介是一个textView,很明显嘉宾介绍肯定是要做自适应的.点击下面的添加活动嘉宾会增加一个Cell,来增加一个嘉宾信息.按照之前的方法,一个嘉宾是没有问题的.当增加很多个嘉宾设置的时候,问题来了,由于使用了下面两句代码实现Cell的样式更新,虽然中间看似什么也没有做,我们在编辑的时候,由于是时候根据内容在动态计算更新cell的大小,加上键盘对输入框焦点,会导致Cell不停的乱跳,无法锁定在当前的输入的输入框.下面就来解决输入的时候Cell乱跳的坑.         </p>
+<pre><code>[tableView beginUpdates];
+[tableView endUpdates];
+</code></pre><p>#二.填坑<br>之前我是在自定义Cell中,在textViewDidChange方法中更新Cell大小,也就是下面两句话:</p>
+<pre><code>[tableView beginUpdates];
+[tableView endUpdates];
+</code></pre><p>  但是后来不管怎么改,只要Cell很多,编辑的时候Cell就会乱跳,后来经过万般寻找,终于找到了合适的办法.我在textViewDidChange有个回调方法,使其能够在controller中动态知道输入的内容.直接上代码吧.</p>
+<pre><code>//textViewDidChange中回调在Controller中的实现
+ -(void)AddGestInfoCellTextViewChangeEventWith:(UITableViewCell *)cell andTextView:(UITextView *)textView{
+
+        //保存输入用户动态输入的内容
+        NSIndexPath * currentIndexPath = [self.tableView indexPathForCell:cell];
+        ActivityGuestInfoModel * guestInfoModel = self.dataSource[currentIndexPath.row];
+        guestInfoModel.introduction = textView.text;
+
+        ///动态更新Cell大小
+        CGRect bounds = textView.bounds;
+        // 计算 text view 的高度
+        CGSize maxSize = CGSizeMake(bounds.size.width, CGFLOAT_MAX);
+        CGSize newSize = [textView sizeThatFits:maxSize];
+        bounds.size = newSize;
+        textView.bounds = bounds;
+        // 让 table view 重新计算高度
+        UITableView *tableView = [self tableView];
+        [tableView beginUpdates];
+        [tableView endUpdates];
+        //重点就是这个方法,调整Cell的大小之后,就要保持当前Cell不会跳动
+         [self scrollToCursorForTextView:textView];
+
+}
+</code></pre><p> 下面就是 scrollToCursorForTextView:方法的具体实现,目的就是保证编辑的当前Cell不会更加输入内容,而胡乱跳动,代码如下:</p>
+<pre><code>  - (void)scrollToCursorForTextView: (UITextView*)textView {
+   //获取光标的位置区域
+   CGRect cursorRect = [textView caretRectForPosition:textView.selectedTextRange.start];
+    //转换坐标系
+   cursorRect = [self.tableView convertRect:cursorRect fromView:textView];
+     //判断光标是否在可见区域
+    if (![self rectVisible:cursorRect]) {
+         //没有在可见区域则滚动到可见区域
+        cursorRect.size.height += 8; // To add some space underneath the cursor
+        [self.tableView scrollRectToVisible:cursorRect animated:YES];
+    }
+ }
+//判断是否在可见区域
+- (BOOL)rectVisible: (CGRect)rect {
+     CGRect visibleRect;
+     visibleRect.origin = self.tableView.contentOffset;
+     visibleRect.origin.y += self.tableView.contentInset.top;
+     visibleRect.size = self.tableView.bounds.size;
+     visibleRect.size.height -= self.tableView.contentInset.top + self.tableView.contentInset.bottom;
+     return CGRectContainsRect(visibleRect, rect);
+}
+</code></pre><p>#总结<br>其实解决的方法很简单,却烦恼了我很久,感觉万能的stackOverFlow.认真反思一下,觉得自己对问题的思考还不够深入,导致没有烦恼了很久都没找到好的解决方案.很久没更写文章了,其实最近一直在反思自己的码砖方式,对自己要求还不够严格,代码结构,代码的规范,代码的重构,都没严格的要求自己,还是在一味的去实现功能,随意的写一些代码.所以下一步目标,严格要求自己,提高自己的代码质量.后面会分享一些收集的编码的一些Tips.</p>
+<p>#后记<br>如果大家对上文有什么疑问,欢迎留言讨论,或者私信与我.同时,上文有什么不对的地方,欢迎大家指正,谢谢大家!分享是一件快乐的事情!</p>
 
                 <hr>
                 
@@ -198,10 +249,15 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
-                           title="序">&larr; Previous Post</a>
+                        <a href="/2017/09/25/开发小Tip总结/" data-toggle="tooltip" data-placement="top"
+                           title="开发小Tip总结">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/09/25/iOS开发日记-tableviewCell的自适应/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发日记-tableviewCell的自适应">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -216,7 +272,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS开发日记-tableviewCell的自适应续-填坑"><span class="toc-text">iOS开发日记-tableviewCell的自适应续(填坑)</span></a></li></ol>
                 </div>
             </div>
         </div>

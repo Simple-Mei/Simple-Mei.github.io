@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Hello World｜SimpleMei&#39;s blog
+        开发小Tip总结｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/12/hello-world/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/开发小Tip总结/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,13 +137,14 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="images/banner.jpg">
+<img class="wechat-title-img"
+     src="images/banner.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('images/banner.jpg');
+        background-image: url('images/banner.jpg')
     }
 
     
@@ -154,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Hello World</h1>
+                    <h1>开发小Tip总结</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-12
+                          日期 2017-09-25
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -171,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Hello World
+            开发小Tip总结
         </span>
     </div>
 </header>
@@ -182,26 +183,97 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+                <blockquote>
+<p>一个追求极致的人,一定要写出优美的代码.每次回头看自己写代码都觉得看不下去,无法想象那是自己写的代码.不断反思,觉得写代码一直太随意,不应该只一味的追求功能的实现,而忽略了代码的整洁,代码的结构.一个好的结构能够更快的进行版本迭代.严格的要求自己,注重代码质量,不断的修炼自己是当下对我自己的要求,增加自己的代码量,改变自己的思维.</p>
+</blockquote>
+<p>#开发Tips</p>
+<p>##Tips1:我的controller代码结构</p>
+<pre><code>#pragma mark - life cycle
 
+#pragma mark - UITableViewDelegate
+
+#pragma mark - CustomDelegate
+
+#pragma mark - event response
+
+#pragma mark - private methods
+
+#pragma mark - getters and setters
+</code></pre><p>##Tips2:</p>
+<pre><code>更新UI可以放在viewWilllayoutSubview或者didLayoutSubview里.
+</code></pre><p>##Tips3:</p>
+<pre><code>巧用属性的get方法来进行初始化.
+</code></pre><p>##Tips4:单例正确姿势</p>
+<pre><code>+ (instancetype)sharedInstance { 
+        static id sharedInstance = nil; 
+        static dispatch_once_t onceToken;
+        dispatch_once(&amp;onceToken, ^{ 
+        sharedInstance = [[self alloc] init]; 
+     }); 
+        return sharedInstance;
+ }
+</code></pre><p>##Tips5:忽略不必要的警告⚠️</p>
+<pre><code>#pragma clang diagnostic push
+#pragma clang diagnostic ignored &quot;-Warc-performSelector-leaks&quot;
+        return [target performSelector:action withObject:params];
+#pragma clang diagnostic pop
+</code></pre><p>##Tips6:CGRect函数</p>
+<pre><code>CGFloat x = CGRectGetMinX(frame); 
+CGFloat y = CGRectGetMinY(frame);
+CGFloat width = CGRectGetWidth(frame);
+CGFloat height = CGRectGetHeight(frame);
+</code></pre><p>##Tips7:避免循环引用</p>
+<pre><code>如果【block内部】使用【外部声明的强引用】访问【对象A】, 那么【block内部】会自动产生一个【强引用】指向【对象A】
+如果【block内部】使用【外部声明的弱引用】访问【对象A】, 那么【block内部】会自动产生一个【弱引用】指向【对象A】
+
+     __weak typeof(self) weakSelf = self;
+     myObj.myBlock = ^{
+    __strong typeof(self) strongSelf = weakSelf;
+    if (strongSelf) {
+          [strongSelf doSomething]; // strongSelf != nil
+          // preemption, strongSelf still not nil（抢占的时候，strongSelf 还是非 nil 的)
+         [strongSelf doSomethingElse]; // strongSelf != nil }
+         else { // Probably nothing... return;
+          }
+   };
+</code></pre><p>##Tips8:SD,XIB的加载</p>
+<pre><code>加载xib,xib名称用NSStringFromClass(),避免书写错误
+</code></pre><p>##Tips9:监听键盘的通知建议:</p>
+<pre><code>使用:UIKIT_EXTERN NSString *const UIKeyboardWillChangeFrameNotification
+而不是,下面代码;因为键盘可能因为改变输入法,切换成表情输入,切换成英文,那么frame可能会变高,变矮,
+不一定会发出下面这些通知,但 是肯定会发上面的通知
+UIKIT_EXTERN?NSString *const UIKeyboardWillShowNotification;
+UIKIT_EXTERN?NSString *const UIKeyboardDidShowNotification;
+UIKIT_EXTERN?NSString *const UIKeyboardWillHideNotification;
+UIKIT_EXTERN?NSString *const UIKeyboardDidHideNotification;
+</code></pre><p>##Tip10: MVC<br>    M应该做的事：</p>
+<pre><code>1. 给ViewController提供数据
+2. 给ViewController存储数据提供接口
+3. 提供经过抽象的业务基本组件，供Controller调度
+
+C应该做的事：
+1. 管理View Container的生命周期
+2. 负责生成所有的View实例，并放入View Container
+3. 监听来自View与业务有关的事件，通过与Model的合作，来完成对应事件的业务。
+V应该做的事：
+1. 响应与业务无关的事件，并因此引发动画效果，点击反馈（如果合适的话，尽量还是放在View去做）等。
+2. 界面元素表达
+</code></pre>
                 <hr>
                 
 
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
-                           title="序">&larr; Previous Post</a>
+                        <a href="/2017/09/25/CTNetworking源码结构解读/" data-toggle="tooltip" data-placement="top"
+                           title="CTNetworking源码结构解读">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/09/25/iOS开发日记-tableviewCell的自适应续/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发日记-tableviewCell的自适应续">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -216,7 +288,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+                    
                 </div>
             </div>
         </div>

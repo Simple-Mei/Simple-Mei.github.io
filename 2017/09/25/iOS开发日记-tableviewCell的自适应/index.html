@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Hello World｜SimpleMei&#39;s blog
+        iOS开发日记-tableviewCell的自适应｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/12/hello-world/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/iOS开发日记-tableviewCell的自适应/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,13 +137,14 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="images/banner.jpg">
+<img class="wechat-title-img"
+     src="images/banner.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('images/banner.jpg');
+        background-image: url('images/banner.jpg')
     }
 
     
@@ -154,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Hello World</h1>
+                    <h1>iOS开发日记-tableviewCell的自适应</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-12
+                          日期 2017-09-25
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -171,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Hello World
+            iOS开发日记-tableviewCell的自适应
         </span>
     </div>
 </header>
@@ -182,15 +183,48 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+                <blockquote>
+<p>写在前言:<br>久了没写文章,就会变得越来越懒,还会给自己找各种理由,说自己忙,没时间写文章.其实最近由于受一个很热门的话题困扰-关于程序猿的年龄的思考,自己有些迷茫,思考了半天也不知道如何是好,程序猿真的是吃青春饭的么?不管了,还是坚持2017年的目标,坚持写自己开发日记吧.</p>
+</blockquote>
+<p>之前有个项目里面大量用到了tableview,而且还是表单形式,需要填写一些自定义的数据,UI要求数据输入框要根据内容大小来撑大.很庆幸,现在项目都是从iOS8适配,所以自然想到了AutoLayout以及tableview的estimatedRowHeight特性.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-81d365021fcea1f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/300" alt="主页面UI.png -w200"></p>
+<p>图中要求标题输入,当输入内容超过设计大小,要自动撑大,下面的选项同理.增加选项可以添加更多选项.本项目的采用的是SD,以第一个标题输入框为例.</p>
+<p>##一.添加合适的约束<br>输入框这个Cell的约束添加:</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-e90191777c56e8f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="layout.png"></p>
+<p>##二.TableView的设置<br>设置tableview行高的估算高度:</p>
+<pre><code>self.tableView.estimatedRowHeight = 50;
+self.tableView.rowHeight = UITableViewAutomaticDimension;
+</code></pre><p>##三.自定义可编辑Cell中的设置</p>
+<p>要想对输入框的实时输入进行输入框的实时改变,就要监听textView的输入事件.</p>
+<pre><code>-(void)textViewDidChange:(UITextView *)textView{
+
+        CGRect bounds = textView.bounds;
+        // 计算 text view 的高度
+        CGSize maxSize = CGSizeMake(bounds.size.width, CGFLOAT_MAX);
+        CGSize newSize = [textView sizeThatFits:maxSize];
+        bounds.size = newSize;
+        textView.bounds = bounds;
+        // 让 table view 重新计算高度
+        UITableView *tableView = [self tableView];
+        [tableView beginUpdates];
+        [tableView endUpdates];
+
+       //输入框输入内容的回调
+       [self.delegate TextEditCellTextChangeWithContentText:textView.text];
+}
+      //获取当前的cell所属的tableview
+    - (UITableView *)tableView
+    {
+            UIView *tableView = self.superview;
+            while (![tableView isKindOfClass:[UITableView class]] &amp;&amp; tableView) {
+               tableView = tableView.superview;
+            }
+            return (UITableView *)tableView;
+    }
+</code></pre><p>##总结<br>这样一个自适应的TableViewCell就完成了,是不是很简单.如果上文有什么不对的地方,请大家指出,或者有什么问题,可以给我留言或者发消息,大家一起探讨,共同进步.</p>
+<blockquote>
+<p>写在最后:<br>最近开始学习Swift了,Swift已经更新到3.0了,已经趋于稳定,发现github上越来越来的开源是Swift写的,已经掉队的感觉,所以的赶紧跟上.后面会写一些学习Swift笔记.</p>
+</blockquote>
 
                 <hr>
                 
@@ -198,10 +232,15 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
-                           title="序">&larr; Previous Post</a>
+                        <a href="/2017/09/25/iOS开发日记-tableviewCell的自适应续/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发日记-tableviewCell的自适应续">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/09/25/iOS开发日记-Runtime学习入门/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发日记-Runtime学习入门">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -216,7 +255,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+                    
                 </div>
             </div>
         </div>

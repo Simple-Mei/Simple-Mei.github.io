@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Hello World｜SimpleMei&#39;s blog
+        CTNetworking源码结构解读｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/12/hello-world/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/CTNetworking源码结构解读/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,13 +137,14 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="images/banner.jpg">
+<img class="wechat-title-img"
+     src="images/banner.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('images/banner.jpg');
+        background-image: url('images/banner.jpg')
     }
 
     
@@ -154,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Hello World</h1>
+                    <h1>CTNetworking源码结构解读</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-12
+                          日期 2017-09-25
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -171,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Hello World
+            CTNetworking源码结构解读
         </span>
     </div>
 </header>
@@ -182,15 +183,38 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+                <blockquote>
+<p>写一段时间的代码,就应该回过头来反思一般，记录自己觉得写好的地方,发现自己写的不好的地方，静下来思考怎样将之写的更好或者去借鉴模仿大神们的大神通，然后融汇贯通,使之成为自己的知识体系。上面这点算是最近的一点感悟吧。</p>
+<p>通过几个项目，一直想做的一件事就是项目中的网络请求这块的封装。虽然AFNetworking已经对网络层进行了一层封装，但是作为应用的更上层调用应该可以更简单，结构更清晰。通过网络上的推荐,我找到了猿题库的YTKNetwork和casa大神的CTNetworking这两个第三方网络库，都可以以很小的代价，替换底层用的第三方网络库，而不用通篇去替换请求方法。</p>
+<p>下面就是我阅读casa大神CTNetworking这个库源码的一些整理吧，通过整理来了解这个库结构，逻辑。</p>
+</blockquote>
+<p>#CTNetworking<br>CTNetworking的文件结构分为了四个大类文件夹，如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-49114fc29ef91f55.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CTNetworkingMain.png"></p>
+<pre><code>Categories文件夹：放一些写的辅助分类
+Components文件夹：放核心功能的组件
+Generators文件夹：对象生产工厂，封装了各种需要对象的创建
+Services文件夹：用来配置网络配置基类
+</code></pre><p>##一、Categories文件夹<br>这个文件夹放了一些分类，主要是对一些字符串，字典，数组进行一些特定的处理。里面有7个分类，如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-3919f03531c2a432.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CategoriesMain.png"></p>
+<p>下面就来看看这些分类提供了什么功能，图下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-3390d88233068def.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="
+![Uploading nsdictionary_745894.png . . .]
+"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-ba6aae9fa39da815.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="nsmutalbleString.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-01fc5a08df38e696.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="nsobject.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-116ea301e76c6426.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="nsrequest.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-cf7edddc7581df7e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="nsstring.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-4a047fa0e4baa7f3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="UIdevice.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-dc6f822d25a8acf2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="nsdictionary.png"></p>
+<p>##Components文件夹（核心）：<br>这块就是对网络请求的上层的封装的东西，仔细一看其实东西很少，分了6个类，他们各司其职，他们的功能如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-714d3c8a07311f04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="component.png"></p>
+<p>##Generators文件夹：<br>这个文件夹的类，主要就是对象工厂，生产所需要的对象，结构如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-8430bc583a3a986b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="generators.png"></p>
+<p>##Services文件夹<br>这个文件中是配置网络配置的基类，提供了网络配置各种信息，结构如下图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-f4fa0aaf9bb4fc9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="services.png"></p>
+<p>#总结<br>以上就是对CTNetworking的结构的分析，对这个库有更深入的了解，下一步就是具体的代码实现的解析了，后面会分享代码解析分享。</p>
+<p>参考文章：</p>
+<p><a href="https://casatwy.com/iosying-yong-jia-gou-tan-wang-luo-ceng-she-ji-fang-an.html" target="_blank" rel="external">iOS应用架构谈 网络层设计方案</a></p>
 
                 <hr>
                 
@@ -198,10 +222,15 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
-                           title="序">&larr; Previous Post</a>
+                        <a href="/2017/09/25/使用Cocoapods创建私有库Pods/" data-toggle="tooltip" data-placement="top"
+                           title="使用Cocoapods创建私有库Pods">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/09/25/开发小Tip总结/" data-toggle="tooltip" data-placement="top"
+                           title="开发小Tip总结">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -216,7 +245,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+                    
                 </div>
             </div>
         </div>

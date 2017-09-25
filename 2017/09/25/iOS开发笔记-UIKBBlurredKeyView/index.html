@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Hello World｜SimpleMei&#39;s blog
+        iOS开发笔记-UIKBBlurredKeyView｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/12/hello-world/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/iOS开发笔记-UIKBBlurredKeyView/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,13 +137,14 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="images/banner.jpg">
+<img class="wechat-title-img"
+     src="images/banner.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('images/banner.jpg');
+        background-image: url('images/banner.jpg')
     }
 
     
@@ -154,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Hello World</h1>
+                    <h1>iOS开发笔记-UIKBBlurredKeyView</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-12
+                          日期 2017-09-25
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -171,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Hello World
+            iOS开发笔记-UIKBBlurredKeyView
         </span>
     </div>
 </header>
@@ -182,15 +183,24 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+                <blockquote>
+<p>周一早上一开会，就听到一个噩耗，上线已久的app有一个必现的crash的bug，心情瞬间有些凉。</p>
+</blockquote>
+<p>#直接上问题吧<br>有一个用tableview做的一个填写表单页面，只要在填写时，切换到手写输入法，手写之后就会crash，然后错误提示：[UIKBBlurredKeyView candidateList]: unrecognized selector sent to instance，之前从来没遇到过这种错误，一直不知所措。只好求助万能的谷歌百度，原来是手势冲突原因。<br>由于之前开发的时候，为了让填写表单是弹出的键盘能点击空白处收回键盘，就给scrollview写了一个分类，重写了三个方法。</p>
+<pre><code>- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+[[self nextResponder] touchesBegan:touches withEvent:event];
+[super touchesBegan:touches withEvent:event];
+}
+
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+[[self nextResponder] touchesMoved:touches withEvent:event];
+[super touchesMoved:touches withEvent:event];
+}
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+[[self nextResponder] touchesEnded:touches withEvent:event];
+[super touchesEnded:touches withEvent:event];
+}
+</code></pre><p>手写输入法和这个分类处理手势冲突导致app crash了。找到问题就好办了，最后放弃了这个分类，解决手写输入crash的bug，但是点击tableview空白收回键盘的功能也就失效了。最后只有往tableview上加一个tap手势，来收回键盘。键盘是回收了，但是tableview上一些cell不能点击跳转了，又是手势冲突。还好添加的手势有一个cancelsTouchesInView属性，文档解释：A Boolean value affecting whether touches are delivered to a view when a gesture is recognized.这个布尔属性默认是YES,就是会取消手势的传递到视图，所以在给tableview添加手势的时候，将次属性设置为NO,这样手势可以传递到tableview上，从而可以响应Cell的选择事件。</p>
 
                 <hr>
                 
@@ -198,10 +208,15 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
-                           title="序">&larr; Previous Post</a>
+                        <a href="/2017/09/25/iOS开发笔记-设置UITaleView背景颜色的坑/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发笔记-设置UITaleView背景颜色的坑">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/09/25/IOS开发日记1-项目中配置多个target及podfile文件配置/" data-toggle="tooltip" data-placement="top"
+                           title="IOS开发日记1-项目中配置多个target及podfile文件配置">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -216,7 +231,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+                    
                 </div>
             </div>
         </div>

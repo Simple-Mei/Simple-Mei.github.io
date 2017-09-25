@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Hello World｜SimpleMei&#39;s blog
+        使用Cocoapods创建私有库Pods-脚本篇｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/12/hello-world/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/使用Cocoapods创建私有库Pods-脚本篇/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,13 +137,14 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="images/banner.jpg">
+<img class="wechat-title-img"
+     src="images/banner.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('images/banner.jpg');
+        background-image: url('images/banner.jpg')
     }
 
     
@@ -154,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Hello World</h1>
+                    <h1>使用Cocoapods创建私有库Pods-脚本篇</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-12
+                          日期 2017-09-25
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -171,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Hello World
+            使用Cocoapods创建私有库Pods-脚本篇
         </span>
     </div>
 </header>
@@ -182,15 +183,49 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+                <blockquote>
+<p>上一篇尝试了创建自己的pod私有库，步骤还算简单，但是有些重复性工作能不能用脚本代替呢？当然自己的功力还没达到那个火候，只有借别人的轮子，偶然的一个机会找到了casa大神在github上有一个脚本，<a href="https://github.com/casatwy/ConfigPrivatePod" target="_blank" rel="external">脚本地址</a>。脚本提供了podspec，gitignore，readme.md，podfile，license模板，通过config.sh配置当前项目，就可以给将要组件化的项目添加这些必要的文件，然后在通过upload.sh脚本就可以提交podspec文件到repo去。接下来就简单介绍一下脚本的使用步骤吧。</p>
+</blockquote>
+<p>##步骤一 下载脚本<br>从<a href="https://github.com/casatwy/ConfigPrivatePod" target="_blank" rel="external">这里</a>下载脚本，ConfigPrivatePod文件夹中包含一个config.sh脚本文件和一个templates文件夹，templates文件夹里全是所需要的模板文件，在配置并执行了config.sh脚本后，会为我们的项目生成项目特定的文件。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-5824cf53abbc218e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="文件目录目录.png"></p>
+<p>##步骤二 创建私有源仓库，配置模板<br>在公司自己的服务器或者在GitHub上创建一个作为私有库的仓库，这里我创建的仓库名字为：XLZGComponent，仓库地址为：<a href="http://*****/XLZGComponent.git。" target="_blank" rel="external">http://*****/XLZGComponent.git。</a><br>首先，向Cocoapods的repo添加我们创建的私有库，添加命令：</p>
+<pre><code>pod repo add XLZGComponent http://*****/XLZGComponent.git
+</code></pre><p>接着，修改templates文件夹中的podfile模板，如下：</p>
+<pre><code># Uncomment this line to define a global platform for your project
+# platform :ios, &apos;9.0&apos;
+
+//这里就是自己的私有源地址（我们刚刚创建的）
+source &apos;http://*****/XLZGComponent.git&apos;
+//GitHub的源地址
+source &apos;https://github.com/CocoaPods/Specs.git&apos;
+
+target &apos;__ProjectName__&apos; do
+  # Uncomment this line if you&apos;re using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+end
+</code></pre><p>继续，修改upload.sh脚本中私有库名字，如下：</p>
+<pre><code>pod repo push 自己的私有库名字 __ProjectName__.podspec --verbose --allow-warnings
+</code></pre><p>我的就是这样的：</p>
+<pre><code>pod repo push XLZGComponent __ProjectName__.podspec --verbose --allow-warnings
+</code></pre><p>##步骤三 创建项目工程，工程的git仓库<br>创建一个工程项目，这个项目中将有我们一会儿需要pod的源文件。由于使用脚本，所以要注意项目和脚本文件的层级，我的是这样的：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-edf8785b2d47059c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="文件层级.png"></p>
+<p>我的PodTest文件下放了ConfigPrivatePod脚本文件夹，testA为我的工程项目，在git服务器上创建一个testA的git仓库：<a href="http://*****/testA.git。" target="_blank" rel="external">http://*****/testA.git。</a></p>
+<h2 id="步骤四-配置并执行config-sh"><a href="#步骤四-配置并执行config-sh" class="headerlink" title="步骤四 配置并执行config.sh"></a>步骤四 配置并执行config.sh</h2><p>终端cd到 ConfigPrivatePod 文件夹，运行脚本：</p>
+<pre><code>./ConfigPrivatePod.sh
+</code></pre><p>按提示输入项目的HTTPS Repo URL ,SSH Repo URL ,HOME Page URL地址，我这里就是输入testA相关地址。配置好了，就可以发现我们项目文件下面多了一些东西：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-badf16fb08e6b64e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="详情.png"></p>
+<p><strong>说明</strong>：因为在实际使用中，我们不可能pod整个项目到我们项目中去，只会pod一些类文件或者资源文件。所以我在项目中创建了一个和项目名一样的文件夹testA，里面有一个类，这个就是一会儿将作为第三使用的类。而且casa的这个脚本在创建podspec文件里设置源文件路径也是在项目文件夹下与项目名一样的文件夹。也不知道说清楚没有，也就是要使用这个脚本，需要在xcode项目名目录下创建一个和项目名一样的文件夹里面放要作为第三方的文件。<strong>当然这不是必须，只是为了脚本，当然可以根据自己的需要修改脚本。</strong>还是觉得好绕，就说到这里吧，下面是xcode层级：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4222928-cf60d052cf66384e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="xcode层级.png"></p>
+<p><strong>注意：放A_catergory类的文件夹testA在项目中必须是一个物理存在的一文件夹。</strong></p>
+<h2 id="步骤五-提交项目到git仓库，发版"><a href="#步骤五-提交项目到git仓库，发版" class="headerlink" title="步骤五 提交项目到git仓库，发版"></a>步骤五 提交项目到git仓库，发版</h2><p>参照前一篇，发版那一步，<a href="http://www.jianshu.com/p/90d32738d15d" target="_blank" rel="external">这里</a></p>
+<h2 id="步骤六-提交podspec文件到repo去"><a href="#步骤六-提交podspec文件到repo去" class="headerlink" title="步骤六 提交podspec文件到repo去"></a>步骤六 提交podspec文件到repo去</h2><p>cd到templates文件下，执行upload.sh脚本：</p>
+<pre><code>./upload.sh
+</code></pre><p>##最后<br>最后就可以像使用AFNetworking一样pod使用了，具体使用方法参照前一篇，使用步骤，<a href="http://www.jianshu.com/p/90d32738d15d" target="_blank" rel="external">这里</a></p>
+<p>#总结<br>终于写完了，写的好纠结，总觉得没写清楚，没有清楚的表达出具体的步骤。如有不懂得地方，请留言，或者私信，一起探讨，有不对的地方也请大家指出，我立刻改正。自己也了好几篇文章，写文章不容易，写一篇通俗易懂的文章更不容易，这也许是我坚持写的原因，希望有一天能让自己想表达的通过文字完全的表达出来，写文章还有一个好处，让自己再一次梳理逻辑，让逻辑更清晰，记忆更深刻。在此感谢casa大神。</p>
+<blockquote>
+<p>分享是一件快乐的事情！</p>
+</blockquote>
 
                 <hr>
                 
@@ -198,10 +233,15 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
-                           title="序">&larr; Previous Post</a>
+                        <a href="/2017/09/25/iOS系统居然自带悬浮窗口调试工具/" data-toggle="tooltip" data-placement="top"
+                           title="iOS系统居然自带悬浮窗口调试工具">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/09/25/使用Cocoapods创建私有库Pods/" data-toggle="tooltip" data-placement="top"
+                           title="使用Cocoapods创建私有库Pods">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -216,7 +256,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#步骤四-配置并执行config-sh"><span class="toc-text">步骤四 配置并执行config.sh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#步骤五-提交项目到git仓库，发版"><span class="toc-text">步骤五 提交项目到git仓库，发版</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#步骤六-提交podspec文件到repo去"><span class="toc-text">步骤六 提交podspec文件到repo去</span></a></li></ol>
                 </div>
             </div>
         </div>

@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Hello World｜SimpleMei&#39;s blog
+        IOS开发日记1-项目中配置多个target及podfile文件配置｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/12/hello-world/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/IOS开发日记1-项目中配置多个target及podfile文件配置/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,13 +137,14 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="images/banner.jpg">
+<img class="wechat-title-img"
+     src="images/banner.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('images/banner.jpg');
+        background-image: url('images/banner.jpg')
     }
 
     
@@ -154,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Hello World</h1>
+                    <h1>IOS开发日记1-项目中配置多个target及podfile文件配置</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-12
+                          日期 2017-09-25
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -171,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Hello World
+            IOS开发日记1-项目中配置多个target及podfile文件配置
         </span>
     </div>
 </header>
@@ -182,15 +183,39 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+                <p>#前言<br>   最近公司的一个项目是分两个app端，两个app差异很小，差不多70%都是相同的模块，只是个别模块有些差异。最开始没想那么多，为了简单，分别创建了两个项目，后来因为领导要求两个端要同时进行，突然觉得要在两个项目中切换，复用相同的模块很麻烦，毅然决定，把两个app端柔和在一个项目中。记得以前在github上下载的第三方库提供的demo，可以选择不同的运行target，于是想到了创建多个target生成不同的app端，说干就干，于是开始试验项目中多个target配置。</p>
+<p>#配置多个target<br>1.copy target。</p>
+<p>  在项目配置TARGETS中，选中需要复制的target目标，右键选择Duplicate,然后就会出现一个叫<em>*</em> copy名字的target。</p>
+<p>2.修改target名称。</p>
+<p>   首先可以先把新复制的target的名称修改了，双击target名字进入编辑状态，进行名字修改。</p>
+<p>   然后修改scheme的名称，在Xcode左上角点击工程名称，在弹出的下拉框中选择Manage Schemes,在弹出的列表框中，选择新加的名为 <em>*</em> copy的target，将它修改成和前面修改的相同的名字。</p>
+<p>3.配置target。</p>
+<p>   在copy target的时候同时也复制了一份<em>*</em> copy-info.plist文件，当然可以根据自己的需要修改此plist的的名字，但是一定将此plist文件和target重新绑定。选择新copy的target，点击General，会出现一个选择文件的按钮，点击选择你新修改名字的plist文件。</p>
+<p>   到此2个target其实已经基本成功了，目前两个target已经可以运行了。后面你添加文件的时候，根据自己需要添加到对应的target就可以了。但是在代码中怎样区分两个target呢？我们可以添加一个预编译宏来解决。target-&gt;Build Setting，搜索：Preprocessor Macros，设置Debug和Release里的预编译宏内容，比如TARGET_VERSION=1表示一个target版本（注意=前后不能右空格，有空格会编译不过），程序中对不同版本这样判断：                </p>
+<pre><code> #if TARGET_VERSION_LITE ==1
+  ...
+#elif TARGET_VERSION_LITE ==2
+  ...
+ #endif
+</code></pre><p>#问题来了？<br> 由于项目中之前配置了podfile，复制之后两个target没什么问题，但是当我在podfile中添加一个新的三方库，pod install的时候，就会导致其中一个target会找不到头文件。之前查阅资料就看到一篇文章，提示要先把podfile文件写好，并且pod install了，最后再copy，这样就不会出现问题。但是一个项目有时候很难预料后面会用到什么第三方库，又是多人协作，难免别人不会再后面会添加新的第三方库。经过多次试验，查阅资料，感觉自己又像发现新大陆一样，原来pod文件编写也是一门学问，也是有很多语法的。解决问题的方法就是podfile文件的正确编写。查看了官方podfile文件编写语法，经过试验，终于解决了此问题。</p>
+<pre><code>source &apos;https://github.com/CocoaPods/Specs.git&apos;
+platform :ios, &apos;8.0&apos;
+abstract_target &apos;AAAA&apos; do  
+
+pod &apos;AFNetworking&apos;, &apos;~&gt; 3.0&apos;
+pod &apos;Masonry&apos;
+pod &apos;MJRefresh&apos;
+pod &apos;SDWebImage&apos;, &apos;~&gt;3.8&apos;
+pod &apos;RongCloudIM/IMLib&apos;, &apos;2.8.0&apos;
+pod &apos;RongCloudIM/IMKit&apos;, &apos;2.8.0&apos;
+pod &apos;SVProgressHUD&apos;
+
+target &apos;BBBB&apos;
+target &apos;CCCC&apos;
+end
+</code></pre><p>在podfile配置文件中，我使用了abstract_target关键字，后面跟的名字AAAA是一个不存在的target名字，后面增加我项目中实际存在的两个target，整体表示我这个两个target共用上面的所有库。当然我觉得还有其他方式可以实现，pod语法还不是很熟，还有很多需要学习了解的地方。</p>
+<p>最后，因为还有启动页和icon图片没有设置，不知道多个target会有如何配置，若有，会后续更新文章说明。</p>
+<p>#结语<br>第一次写简书，记录自己的开发笔记，还有很多不熟地方，对markdown不熟，语言组织能力也还欠缺，总觉得自己没讲清楚，继续努力。希望以后可以配图，图文并茂。<br>       最后文章有什么不对的地方，请大家多多指教~</p>
 
                 <hr>
                 
@@ -198,10 +223,15 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
-                           title="序">&larr; Previous Post</a>
+                        <a href="/2017/09/25/iOS开发笔记-UIKBBlurredKeyView/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发笔记-UIKBBlurredKeyView">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/09/23/序/" data-toggle="tooltip" data-placement="top"
+                           title="序">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -216,7 +246,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+                    
                 </div>
             </div>
         </div>
