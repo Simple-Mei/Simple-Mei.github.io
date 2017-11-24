@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Swift学习日记-面向协议编程swift初探｜SimpleMei&#39;s blog
+        Swift学习日记-swift备忘录1｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/11/24/Swift学习日记-面向协议编程swift初探/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/11/24/Swift学习日记-swift备忘录1/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -155,7 +155,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Swift学习日记-面向协议编程swift初探</h1>
+                    <h1>Swift学习日记-swift备忘录1</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
@@ -172,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Swift学习日记-面向协议编程swift初探
+            Swift学习日记-swift备忘录1
         </span>
     </div>
 </header>
@@ -183,113 +183,26 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <blockquote>
-<p>也不知道何时冒出了面向协议编程，很多文章都开始大谈面向协议编程，抛弃了之前都还畅谈面向对象编。也许一个技术用久了，就会渐渐表现出其不足之处，当这种不足让人无法忍受，就会去寻找新的解决方法，来弥补现在的不足，一个新的事物也就因此而诞生。</p>
-<p>面向对象，从开始接触编程开始就要求用面向对象的思想去设计代码，当类之间的关系变得越来复杂，类之间的继承层级越来越深，就会出现类似树形结构，当我们想重用树形末端的代码时，不得不把上层直至树根的代码一起添加，也不管有用没用的代码。面向协议编程，我的理解就是解除这种情况的出现，把功能分散开来，通过组合的方式来创建出一个类，让这个类拥有它应该有的功能，分散出来的功能也可以在其他地方复用，不会引入过多的不必要的的代码，当然这个取决于功能的粒度大小。</p>
-<p>swift恰好支持面向协议编程特性，自己还需要从面向对象中走出了，认真理解，学习面向协议，更重要的是在实践中去应用。下面就是对面向协议的一个简单窥探吧，体验它的好处</p>
-</blockquote>
-<p>##初体验<br>这是一个简单的demo。先看图：</p>
-<p><img src="/Users/pengmason/Documents/Project/SimpleMei.github.io/source/images/13.gif" alt=""></p>
-<p>当点击登录按钮，两个输入框及按钮都会左右抖动，然后一行提示文字渐渐显示，最后在慢慢消失。可能最开始拿到这个需求，要么在点击按钮的时候分别对控件进行动画控制或者自定义控件中添加动画功能，这样要么在控制器会有很多代码，要么同样一个抖动动画代码会出现在自定义的输入框代码中，也会出现在自定义按钮的代码中。本着不要重复造轮子的原则，面向协议就会很好解决这些问题。</p>
-<p>1.自定义这三种控件的类，以此来添加动画特效</p>
-<pre><code>// 自定义的输入框类，遵守抖动协议
-class SP_TextField: UITextField, SharkAnimation {
-
-}
-// 自定义的按钮类，遵守抖动协议
-class SP_Button: UIButton,SharkAnimation {
-
-}
-// 自定义label类，遵守渐变协议
-class SP_Label: UILabel, FlashAnimation {
-
-
-}
-</code></pre><p>2.定义两个协议</p>
-<pre><code>// 左右抖动协议
-protocol ShakeAnimation {
-
-}
-// 由于动画是加在view上的，所以要保证遵守的协议类必须是继承自UIView，所以使用where限制
-extension ShakeAnimation where Self : UIView {
-    //抖动的方法的默认实现
-    func shake()  {
-        let shakeAni = CAKeyframeAnimation(keyPath: &quot;transform.translation.x&quot;)
-
-        shakeAni.values = [-8,0,8,0]
-        shakeAni.duration = 0.25
-        shakeAni.repeatCount = 5
-
-        self.layer.add(shakeAni, forKey: nil)
-
-    }
-}
-
-// 渐变的协议
-protocol FlashAnimation {
-
-}
-// 同样需要遵守的类是继承自UIView的类
-extension FlashAnimation where Self : UIView {
-    // 渐变方法的默认实现
-    func flash() {
-        UIView.animate(withDuration: 0.25, animations: {
-            self.alpha = 1.0
-        }) { (isFinished) in
-            UIView.animateKeyframes(withDuration: 0.25, delay: 2.0, options: [], animations: {
-                self.alpha = 0.0
-            }, completion: nil)
-        }
-    }
-}
-</code></pre><p>3.在控制器中使用</p>
-<pre><code>class ViewController: UIViewController {
-
-    @IBOutlet weak var nameTextField: SP_TextField!
-
-    @IBOutlet weak var passwordTextField: SP_TextField!
-
-    @IBOutlet weak var tipLabel: SP_Label!
-
-    @IBOutlet weak var loginButton: SP_Button!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    // 按钮点击事件
-    @IBAction func buttonClick(_ sender: SP_Button) {
-
-        // 点击时直接调用就可以了
-        nameTextField.shake()
-        passwordTextField.shake()
-        tipLabel.flash()
-        loginButton.shake()
-    }
-}
-</code></pre><p>4.如果以后还有其他控件，直接遵守协议，就拥有了抖动或者渐变的功能，是不是感觉很爽，很方便，复用性也强。当然这个功能的粒度需要自己掌控</p>
-<p>这个是在学习中看到的一个示例，自己实现了一遍，是不是感觉很爽，拥抱面向协议吧。</p>
+                <h1 id="Swift学习日记-swift备忘录1"><a href="#Swift学习日记-swift备忘录1" class="headerlink" title="Swift学习日记-swift备忘录1"></a>Swift学习日记-swift备忘录1</h1><p>##Swift - 协议<br>1.既可以定义属性，也可以定义方法<br>2.属性和方法，在protocol中都不能有默认实现<br>3.定义属性时必须指定属性时可读写/可读/可写 {get set}<br>4.默认情况下，被遵守协议的类/结构体等必须实现，如果只希望协议被类遵守，可以在协议名字后面加 ：class<br>3.如果希望协议中的方法或者属性时可选，首先在protocol前加@objc 在可选的方法或属性前加@objc<br>4.协议的默认实现必须在协议的extension中提供默认实现<br>5.协议/结构体中类方法使用static关键字<br>6.只有协议中允许使用Self<br>7.where 限制协议遵守的类型**<br>8.associatedtype关键字来声明一个类型的占位符作为协议定义的一部分</p>
+<h2 id="Swift-访问控制"><a href="#Swift-访问控制" class="headerlink" title="Swift - 访问控制"></a>Swift - 访问控制</h2><p>访问权限 open &gt; public &gt; interal &gt; fileprivate &gt; private</p>
+<h3 id="private"><a href="#private" class="headerlink" title="private"></a>private</h3><p>访问级别所修饰的属性或者方法只能在当前类里访问</p>
+<p>###fileprivate<br>访问级别所修饰的属性或者方法在当前的swift源文件里可以访问</p>
+<p>###internal默认访问级别<br>访问级别所修饰的属性或者方法在源代码所在的整个模块都可以访问，如果是框架或者库代码，则在整个框架内部都可以访问，框架外部代码所引用是，则不可以访问。</p>
+<p>###public<br>可以被任何人访问，但其他module中不可以被override和继承，而在module内可以被override和继承</p>
+<p>###open<br>可以被任何人使用，包括override和继承</p>
+<blockquote>
 <p>独立思考，不屈从世界，安静内心，疯子一样行动，不理会周遭的嘈杂，有节奏的行走在coding~</p>
+</blockquote>
 
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2017/11/24/Swift学习日记-swift备忘录1/" data-toggle="tooltip" data-placement="top"
-                           title="Swift学习日记-swift备忘录1">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2017/11/24/Swift学习日记-从pageView开始swift初探/" data-toggle="tooltip" data-placement="top"
-                           title="Swift学习日记-从pageView开始swift初探">Next Post &rarr;</a>
+                        <a href="/2017/11/24/Swift学习日记-面向协议编程swift初探/" data-toggle="tooltip" data-placement="top"
+                           title="Swift学习日记-面向协议编程swift初探">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -305,7 +218,7 @@ extension FlashAnimation where Self : UIView {
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift学习日记-swift备忘录1"><span class="toc-text">Swift学习日记-swift备忘录1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Swift-访问控制"><span class="toc-text">Swift - 访问控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#private"><span class="toc-text">private</span></a></li></ol></li></ol></li></ol>
                 </div>
             </div>
         </div>
