@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        iOS开发日记-项目中多Xcconfig简单使用｜SimpleMei&#39;s blog
+        Swift学习日记-从pageView开始swift初探｜SimpleMei&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://simplemei.github.io/2017/09/25/iOS开发日记-项目中多Xcconfig简单使用/">
+    <link rel="canonical" href="http://simplemei.github.io/2017/11/24/Swift学习日记-从pageView开始swift初探/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -155,12 +155,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>iOS开发日记-项目中多Xcconfig简单使用</h1>
+                    <h1>Swift学习日记-从pageView开始swift初探</h1>
                     
                     <span class="meta">
                          作者 SimpleMei
                         <span>
-                          日期 2017-09-25
+                          日期 2017-11-24
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -172,7 +172,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            iOS开发日记-项目中多Xcconfig简单使用
+            Swift学习日记-从pageView开始swift初探
         </span>
     </div>
 </header>
@@ -183,77 +183,30 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <blockquote>
-<p>随着公司项目运营的正规化，提供了多个服务器环境地址来进行不同场景的开发及测试。以前最笨的办法在项目要编译哪个环境就屏蔽定义的其它服务器地址，感觉好low。所以为了方便在各个服务器环境切换打包调试，所以就想起了使用多个Xcconfig的方式来解决这个问题，本身项目已经使用了多个target来配置开发多个相似app。</p>
+                <h1 id="Swift学习日记-从pageView开始swift初探"><a href="#Swift学习日记-从pageView开始swift初探" class="headerlink" title="Swift学习日记-从pageView开始swift初探"></a>Swift学习日记-从pageView开始swift初探</h1><blockquote>
+<p>swift到现在已经出到4.0，是时候该拥抱swift了，而且还觉得有些晚了，毕竟到swift3.0的时候swift就趋于稳定了，swift4.0也只是更稳定，添加了一些新特性，没有过多大的改动。swift感觉很不错，很强大的语言，比起OC来，真的小巫见大巫。从现在起就开启swift的大门，走进swift的世界吧。哈哈哈哈哈~</p>
 </blockquote>
-<p>##创建Xcconfig-在不同mdoel下使用不同的配置</p>
-<p>选择File-&gt;new-&gt;File，弹出的对话框选择创建Xcconfig文件类型，如下图，灰色选中就是我们需要的文件类型。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4222928-780f63a5c7d70419.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ceatefile.png"></p>
-<p>我们可以先建一个文件夹来放这些新建的Xcconfig配置文件，如下图：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4222928-5675ee0955e3ab0a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="configfloder.png"></p>
-<p>PS: 由于项目的需要我建了四个Xcconfig文件，每个都代表一个Model下的配置。</p>
-<pre><code> AppStoreConfig：打包上线时的配置。
- PreServerConfig：预上线测试环境配置。
- 60ServerConfig：开发调试环境配置。
- ProductServerConfig：打包已经在AppStore上面销售的环境配置。
-
-ps：其实还应该有一个公共的CommondConfig文件，用来配置所有配置文件相同的配置的，比如：版本号之类的。
-由于需求简单，我就省去这个，有需求的可以根据自己的需求添加。
-</code></pre><p>##配置不同Xcconfig</p>
-<pre><code>APP_DISPLAY_NAME = 不同配置app显示的名字
-PRODUCT_BUNDLE_IDENTIFIER = 不同配置app的的bundleID,这样可以共存多个app
-BUILD_MODE = 自定义字段区分不同环境Model
-
-ps：APP_DISPLAY_NAME这里设置了，一定要去info.plist文件中把里面的Bundle Name改成
-APP_DISPLAY_NAME，才会生效，如下图:
-</code></pre><p><img src="http://upload-images.jianshu.io/upload_images/4222928-065748909f1535dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="infoplist.png"></p>
-<p>其实这里可以修改你想修改不同的配置，在不同Model下。</p>
-<p>##项目中配置Xcconfig<br>1.在product中配置不同Xcconfig，如下图：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4222928-8b1c54f9efe9956e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="productsetting.png"></p>
-<p>点击Configurations下面的+选择你要添加的类型。最开始默认是Debug和Release两种模式。在我的项目中只有AppStore配置是复制于release，其余都来自debug。当然根据自己项目需求，自己的选择。然后在每个里面选择对应的Xcconfig配置。如果项目中有pods的话，最简单的解决方法就是，pod install 一下，pods就会有提示，提示你应该引用什么什么config。然后你复制对应的配置在config文件添加，如下：</p>
-<pre><code>  //引入pod的config
-#include &quot;Pods/Target Support Files/Pods-xxxx/Pods-xxxxx.appstore.xcconfig&quot; 
-
-APP_DISPLAY_NAME = xxxxxx
-
-PRODUCT_BUNDLE_IDENTIFIER = xxxxxx
-
-BUILD_MODE = APPSTORESERVER
-</code></pre><p>##配置Model<br>我们在Xcconfig自定义了一个key是BUILD_MODE，这个怎么用呢？这个是用来区分不同环境的。在Build Settings中搜索：preprocessor 找到 Preprocessor Macros配置项，在里面添加上我们自定义的key，我们就可以在项目用BUILD_MODE来区分那个环境了，如下图：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4222928-9dfb3523f467535d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="addModel.png"></p>
-<p>添加完后就是这样的，如下图：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4222928-9f8dce67880b6a06.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="overaddmdoel.png"></p>
-<p>##添加多个Scheme<br>在IDE左上角top run 按钮旁边点击scheme，选择new scheme，自定义一个名字，自己高兴就好。我有四个配置文件，所以我有四个scheme，分别对应不同的环境，然后编辑scheme，选择对应的配置，主要是debug，archive，等里面的配置，自己看着办吧。下图是我的四个scheme：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4222928-34b1ae2a5c5c0a96.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="schemelist.png"></p>
-<p>##大功告成，如何使用？</p>
-<p>我是这样用的：</p>
-<pre><code>#if  APPSTORESERVER
-#define baseUrl       @&quot;xxxxx&quot;
-#elif  PRODUCTSERVER
-#define baseUrl       @&quot;xxxxx&quot;
-#elif  PRESERVER
-#define baseUrl       @&quot;xxxxx&quot;
-#elif  TESTSERVER
-#define baseUrl       @&quot;xxxxx&quot;
-#else
-#define baseUrl       @&quot;xxxxx&quot;
-#endif
-</code></pre><p>##最后<br>各路大神有错误的地方，还请给小弟慷慨指出。若小伙伴有什么不懂地方，可以留言，我会尽快回复的。希望对您有用~</p>
+<p>##实践出真知<br>实践出真知，所以在学习一些基础swift基础语法后，唯有实践，才能体验的swift丝滑般柔顺，当然xcode对swift的支持感觉还不够丝滑，提示老是有一些迟缓。于是跟着一些教程敲出了下面的东西。</p>
+<p><img src="/Users/pengmason/Documents/Project/SimpleMei.github.io/source/images/12.gif" alt=""></p>
+<p> 简单介绍一下：</p>
+<pre><code>一共五个swift文件(文件少了很多诶，清爽)：
+SPPageView.swift                // 一个view，将titleView和contentView组合在一起
+SPTitleView.swift                 //  titleView 的构造
+SPContentView.swift           //  contentView的构造
+SPPageStyle.swift               //   整个pageView的一些设置风格设置参数
+UIColor+SPExtension.swift //  对UIColor的扩展
+</code></pre><p>这个大到可以作为整体页面的布局，小到也可以用到一些小控件，比如类似输入法控件。后续将尝试，如果作为页面布局，有可能有的页面是一个列表(UITableView), 也可能是一个瀑布流之类（UICollectionView），也还可以就是一个简单页面。之前OC做过类似contentView中使用UICollectionView来做容器，这样可以利用重用机制节约资源，但是遇到一个问题，就是刷新小问题，不够完美，后来改成用UIScrollView实现。</p>
+<p>最后附上<a href="https://github.com/SimpleMei/Swift_SPPageView" target="_blank" rel="external">代码地址</a></p>
 
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2017/11/24/Swift学习日记-从pageView开始swift初探/" data-toggle="tooltip" data-placement="top"
-                           title="Swift学习日记-从pageView开始swift初探">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2017/09/25/iOS系统居然自带悬浮窗口调试工具/" data-toggle="tooltip" data-placement="top"
-                           title="iOS系统居然自带悬浮窗口调试工具">Next Post &rarr;</a>
+                        <a href="/2017/09/25/iOS开发日记-项目中多Xcconfig简单使用/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发日记-项目中多Xcconfig简单使用">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -269,7 +222,7 @@ BUILD_MODE = APPSTORESERVER
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift学习日记-从pageView开始swift初探"><span class="toc-text">Swift学习日记-从pageView开始swift初探</span></a></li></ol>
                 </div>
             </div>
         </div>
